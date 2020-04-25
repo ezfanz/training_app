@@ -10,105 +10,126 @@ use App\Http\Requests;
 
 use App\User;
 
+use App\Photo;
+
 use App\Role;
 
 class AdminUsersController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
+/**
+* Display a listing of the resource.
+*
+* @return \Illuminate\Http\Response
+*/
+public function index()
+{
+//
 
-        $users = User::all();
+$users = User::all();
 
-        //make users compact
-        return view('admin.users.index', compact('users'));
-    }
+//make users compact
+return view('admin.users.index', compact('users'));
+}
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+/**
+* Show the form for creating a new resource.
+*
+* @return \Illuminate\Http\Response
+*/
+public function create()
+{
+//
 
-        $roles = Role::lists('name','id')->all();
-
-
-          return view('admin.users.create', compact('roles'));
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(UsersRequest $request)
-    {
-        //
-
-        User::create($request->all());
-
-        return redirect('/admin/users');
+$roles = Role::lists('name','id')->all();
 
 
-        // return $request->all();
+return view('admin.users.create', compact('roles'));
+}
 
-          // return view('admin.users.store');
-    }
+/**
+* Store a newly created resource in storage.
+*
+* @param  \Illuminate\Http\Request  $request
+* @return \Illuminate\Http\Response
+*/
+public function store(UsersRequest $request)
+{
+//
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-          return view('admin.users.show');
-    }
+$input = $request->all();
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-          return view('admin.users.edit');
-    }
+if ($file = $request->file('photo_id')) {
+  // code...
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-          return view('admin.users.update');
-    }
+$name = time() . $file->getClientOriginalName();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+$file->move('images', $name);
+
+//create the file
+$photo = Photo::create(['file'=>$name]);
+
+$input['photo_id'] = $photo->id;
+
+}
+
+$input['password'] = bcrypt($request->password);
+
+User::create($input);
+
+
+// return redirect('/admin/users');
+
+
+// return $request->all();
+
+// return view('admin.users.store');
+}
+
+/**
+* Display the specified resource.
+*
+* @param  int  $id
+* @return \Illuminate\Http\Response
+*/
+public function show($id)
+{
+//
+return view('admin.users.show');
+}
+
+/**
+* Show the form for editing the specified resource.
+*
+* @param  int  $id
+* @return \Illuminate\Http\Response
+*/
+public function edit($id)
+{
+//
+return view('admin.users.edit');
+}
+
+/**
+* Update the specified resource in storage.
+*
+* @param  \Illuminate\Http\Request  $request
+* @param  int  $id
+* @return \Illuminate\Http\Response
+*/
+public function update(Request $request, $id)
+{
+//
+return view('admin.users.update');
+}
+
+/**
+* Remove the specified resource from storage.
+*
+* @param  int  $id
+* @return \Illuminate\Http\Response
+*/
+public function destroy($id)
+{
+//
+}
 }
