@@ -46,24 +46,24 @@ class User extends Authenticatable
 
 
 
-    public function setPasswordAttribute($password){
-
-
-        if(!empty($password)){
-
-
-            $this->attributes['password'] = bcrypt($password);
-
-
-        }
-
-
-        $this->attributes['password'] = $password;
-
-
-
-
-    }
+//    public function setPasswordAttribute($password){
+//
+//
+//        if(!empty($password)){
+//
+//
+//            $this->attributes['password'] = bcrypt($password);
+//
+//
+//        }
+//
+//
+//        $this->attributes['password'] = $password;
+//
+//
+//
+//
+//    }
 
 
 
@@ -94,6 +94,19 @@ class User extends Authenticatable
 
 
     }
+
+
+
+    public function getGravatarAttribute(){
+
+
+        $hash = md5(strtolower(trim($this->attributes['email']))) . "?d=mm&s=";
+        return "http://www.gravatar.com/avatar/$hash";
+
+
+    }
+
+
 
 
 
