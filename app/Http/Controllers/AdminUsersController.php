@@ -8,6 +8,8 @@ use App\Http\Requests\UsersEditRequest;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Session;
+
 use App\Http\Requests;
 
 use App\User;
@@ -191,5 +193,21 @@ return redirect('/admin/users');
 public function destroy($id)
 {
 //
+
+// return "DESTROY";
+
+$user = User::findOrFail($id);
+
+//remove picture in public folder
+unlink(public_path()  . $user->photo->file);
+
+$user->delete();
+
+Session::flash('deleted_user', 'The user has been deleted');
+
+
+return redirect('/admin/users');
+
+
 }
 }
